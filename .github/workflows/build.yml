@@ -36,6 +36,9 @@ jobs:
       with:
         push: ${{github.ref == 'refs/heads/master'}}
         target: runtime
+        build-args: |
+          DEBIAN_VERSION=${{matrix.debian_version}}
+          RUBY_VERSION=${{matrix.ruby_version}}
         tags: |
           public.ecr.aws/exapico/lambda-debian-ruby:runtime-${{matrix.debian_version}}-${{matrix.ruby_version}}
         labels: |
@@ -46,6 +49,9 @@ jobs:
       with:
         push: ${{github.ref == 'refs/heads/master'}}
         target: builder
+        build-args: |
+          DEBIAN_VERSION=${{matrix.debian_version}}
+          RUBY_VERSION=${{matrix.ruby_version}}
         tags: |
           public.ecr.aws/exapico/lambda-debian-ruby:builder-${{matrix.debian_version}}-${{matrix.ruby_version}}
         labels: |

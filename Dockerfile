@@ -1,4 +1,4 @@
-ARG DEBIAN_VERSION=buster
+ARG DEBIAN_VERSION
 
 ### Fetch and verify archive signing key
 FROM debian:${DEBIAN_VERSION}-slim as repokey
@@ -12,8 +12,8 @@ RUN gpg --dearmor </tmp/sorah-rbpkg.key >/tmp/sorah-rbpkg.gpg
 ### Base for runtime and builder images
 FROM debian:${DEBIAN_VERSION}-slim as base
 
-ARG DEBIAN_VERSION=buster
-ARG RUBY_VERSION=3.0
+ARG DEBIAN_VERSION
+ARG RUBY_VERSION
 
 RUN echo "deb [signed-by=/usr/share/keyrings/sorah-rbpkg.gpg] http://cache.ruby-lang.org/lab/sorah/deb/ $(printenv DEBIAN_VERSION | cut -d- -f1) main" | \
     tee /etc/apt/sources.list.d/sorah-rbpkg.list
