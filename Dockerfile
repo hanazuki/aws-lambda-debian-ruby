@@ -1,5 +1,6 @@
 ARG DEBIAN_VERSION=buster
 
+### Fetch and verify archive signing key
 FROM debian:${DEBIAN_VERSION}-slim as repokey
 
 RUN apt-get update -qq && \
@@ -8,6 +9,7 @@ RUN curl -fsS https://sorah.jp/packaging/debian/3F0F56A8.pub.txt -o /tmp/sorah-r
 RUN test "$(gpg --with-colons --with-fingerprint </tmp/sorah-rbpkg.key | grep ^fpr: | cut -d: -f10)" = 805E57E2327EE86EB8180E0669CEB9D53F0F56A8
 RUN gpg --dearmor </tmp/sorah-rbpkg.key >/tmp/sorah-rbpkg.gpg
 
+### Base for runtime and builder images
 FROM debian:${DEBIAN_VERSION}-slim as base
 
 ARG DEBIAN_VERSION=buster
@@ -23,6 +25,7 @@ COPY --from=repokey /tmp/sorah-rbpkg.gpg /usr/share/keyrings/sorah-rbpkg.gpg
 RUN mkdir /var/task
 WORKDIR /var/task
 
+### Runtime image
 FROM base as runtime
 
 RUN apt-get update -qq && \
@@ -33,6 +36,7 @@ RUN gem install -N aws_lambda_ric
 
 ENTRYPOINT ["/usr/local/bin/aws_lambda_ric"]
 
+### Bilder image
 FROM base as builder
 
 RUN apt-get update -qq && \
