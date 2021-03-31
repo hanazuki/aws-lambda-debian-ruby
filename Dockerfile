@@ -26,6 +26,8 @@ RUN apt-get update -qq && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates ruby && \
     find /var/lib/apt/lists -type f -delete
 
+RUN useradd -d /var/task -s /sbin/nologin app
+
 RUN mkdir /var/task
 WORKDIR /var/task
 
