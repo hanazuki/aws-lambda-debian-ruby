@@ -22,15 +22,15 @@ RUN echo -n 'Package: *\nPin: origin "cache.ruby-lang.org"\nPin-Priority: 500\n\
 
 COPY --from=repokey /tmp/sorah-rbpkg.gpg /usr/share/keyrings/sorah-rbpkg.gpg
 
+RUN apt-get update -qq && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates ruby && \
+    find /var/lib/apt/lists -type f -delete
+
 RUN mkdir /var/task
 WORKDIR /var/task
 
 ### Runtime image
 FROM base as runtime
-
-RUN apt-get update -qq && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates ruby && \
-    find /var/lib/apt/lists -type f -delete
 
 RUN gem install -N aws_lambda_ric
 
@@ -40,7 +40,7 @@ ENTRYPOINT ["/usr/local/bin/aws_lambda_ric"]
 FROM base as builder
 
 RUN apt-get update -qq && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates ruby-dev build-essential gpg && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ruby-dev build-essential gpg && \
     find /var/lib/apt/lists -type f -delete
 
 ENTRYPOINT ["/bin/sh"]
