@@ -38,6 +38,9 @@ jobs:
         target: runtime
         tags: |
           public.ecr.aws/exapico/lambda-debian-ruby:runtime-${{matrix.debian_version}}-${{matrix.ruby_version}}
+        labels: |
+          org.opencontainers.image.source=${{ github.event.repository.html_url }}
+          org.opencontainers.image.revision=${{ github.sha }}
     - name: Build builder image
       uses: docker/build-push-action@v2
       with:
@@ -45,3 +48,6 @@ jobs:
         target: builder
         tags: |
           public.ecr.aws/exapico/lambda-debian-ruby:builder-${{matrix.debian_version}}-${{matrix.ruby_version}}
+        labels: |
+          org.opencontainers.image.source=${{ github.event.repository.html_url }}
+          org.opencontainers.image.revision=${{ github.sha }}
