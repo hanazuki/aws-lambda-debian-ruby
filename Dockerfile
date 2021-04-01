@@ -28,6 +28,10 @@ RUN apt-get update -qq && \
 
 RUN useradd -d /var/task -s /sbin/nologin app
 
+ENV LANG=C.UTF-8 \
+    TZ=UTC \
+    LAMBDA_TASK_ROOT=/var/task
+
 RUN mkdir /var/task
 WORKDIR /var/task
 
