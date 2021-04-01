@@ -4,7 +4,7 @@ ARG DEBIAN_VERSION=buster
 ARG RUBY_VERSION=3.0
 
 
-FROM public.ecr.aws/exapico/lambda-debian-ruby:builder-${DEBIAN_VERSION}-${RUBY_VERSION} as builder
+FROM public.ecr.aws/exapico/lambda-ruby-builder:${DEBIAN_VERSION}-${RUBY_VERSION} as builder
 
 RUN apt-get update -qq && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends libmariadb-dev && \
@@ -24,7 +24,7 @@ RUN --mount=type=cache,target=/cache/bundler \
     MAKEFLAGS=-j$(nproc) bundle install --verbose
 
 
-FROM public.ecr.aws/exapico/lambda-debian-ruby:runtime-${DEBIAN_VERSION}-${RUBY_VERSION}
+FROM public.ecr.aws/exapico/lambda-ruby:${DEBIAN_VERSION}-${RUBY_VERSION}
 
 RUN apt-get update -qq && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends libmariadb3 && \
