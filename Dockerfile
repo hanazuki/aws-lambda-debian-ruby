@@ -31,11 +31,11 @@ RUN gem install -N aws_lambda_ric
 
 ENTRYPOINT ["/usr/local/bin/aws_lambda_ric"]
 
-### Bilder image
+### Builder image
 FROM base as builder
 
 RUN apt-get update -qq && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ruby-dev build-essential gpg && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ruby-dev build-essential git gpg && \
     find /var/lib/apt/lists -type f -delete
 
 ENTRYPOINT ["/bin/sh"]
