@@ -56,10 +56,8 @@ Dir.mktmpdir do |tmpdir|
 
     Net::HTTP.start('localhost', port) do |http|
       res = http.post('/2015-03-31/functions/function/invocations', '{}')
-      result = JSON.parse(res.body)
-
-      p result
-      puts 'OK'
+      p result = JSON.parse(res.body)
+      fail 'Function returned an error' unless result['ok'] == true
     end
 
   ensure

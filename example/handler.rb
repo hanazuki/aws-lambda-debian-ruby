@@ -1,5 +1,8 @@
 require 'mysql2'
 
 def main(event:, context:)
-  Mysql2::Client.info
+  info = Mysql2::Client.info
+  fail 'Version mismatch for mysqlclient' unless info['version'] == info['header_version']
+
+  {ok: true}
 end
