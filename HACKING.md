@@ -5,9 +5,7 @@
 export DEBIAN_VERSION=buster
 export RUBY_VERSION=3.0
 
-docker build --build-arg DEBIAN_VERSION --build-arg RUBY_VERSION --target builder -t "public.ecr.aws/exapico/lambda-ruby-builder:$DEBIAN_VERSION-$RUBY_VERSION" .
-docker build --build-arg DEBIAN_VERSION --build-arg RUBY_VERSION --target runtime -t "public.ecr.aws/exapico/lambda-ruby:$DEBIAN_VERSION-$RUBY_VERSION" .
-
+scripts/build
 test/test-example
 ```
 
