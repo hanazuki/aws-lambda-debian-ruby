@@ -33,5 +33,4 @@ RUN apt-get update -qq && \
 COPY ./ ./
 COPY --from=builder /var/task/ ./
 
-USER app
 CMD ["handler.main"]
