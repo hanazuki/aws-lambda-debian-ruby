@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+require 'open-uri'
+require 'uri'
+require 'open3'
+
+key_uri = URI('https://sorah.jp/packaging/debian/3F0F56A8.pub.txt')
+expected_fpr = '805E57E2327EE86EB8180E0669CEB9D53F0F56A8'
+
+key = key_uri.open(&:read)
+keyinfo, st = Open3.capture2('gpg', '--show-keys', '--with-fingerprint', '--with-colons', '--with-sig-check', stdin_data: key)
+fail unless st.success?
+
+def validate(keyinfo, expected_fpr)
+  pub = nil
+  found = false
+
+  keyinfo.each_line do |line|
+    case line
+    when /\Apub:/
+      pub = true
+    when /\Asub:/
+      pub = false
+    when /\Afpr:/
+      fail if pub.nil?
+      next unless pub
+      fpr = line.split(?:)[9]
+      fail "Unexpected key with fpr #{fpr}" if fpr != expected_fpr
+      found = true
+    end
+  end
+
+  fail "Key not found" unless found
+end
+
+puts keyinfo
+validate(keyinfo, expected_fpr)
+
+key, st = Open3.capture2('gpg', '--dearmor', stdin_data: key)
+File.write(File.join(__dir__, '../sorah-rbpkg.gpg'), key)
