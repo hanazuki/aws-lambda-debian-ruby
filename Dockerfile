@@ -21,7 +21,6 @@ ENV LANG=C.UTF-8 \
     TZ=UTC \
     LAMBDA_TASK_ROOT=/var/task
 
-RUN mkdir /var/task
 WORKDIR /var/task
 
 ### Runtime image
