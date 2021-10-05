@@ -6,12 +6,12 @@ FROM debian:${DEBIAN_VERSION}-slim as base
 ARG DEBIAN_VERSION
 ARG RUBY_VERSION
 
-RUN printf 'deb [signed-by=/usr/share/keyrings/sorah-rbpkg.gpg] http://cache.ruby-lang.org/lab/sorah/deb/ %s main\n' "$(printenv DEBIAN_VERSION | cut -d- -f1)" | \
+RUN printf 'deb [signed-by=/usr/share/keyrings/sorah-rbpkg.asc] http://cache.ruby-lang.org/lab/sorah/deb/ %s main\n' "$(printenv DEBIAN_VERSION | cut -d- -f1)" | \
     tee /etc/apt/sources.list.d/sorah-rbpkg.list
 RUN printf 'Package: *\nPin: origin "cache.ruby-lang.org"\nPin-Priority: 500\n\nPackage: ruby ruby-dev libruby\nPin: version /^1:%s\..*nkmi/\nPin-Priority: 600\n' "$(printenv RUBY_VERSION | sed 's/\./\\./')" | \
     tee /etc/apt/preferences.d/sorah-rbpkg.pref
 
-COPY sorah-rbpkg.gpg /usr/share/keyrings/sorah-rbpkg.gpg
+COPY sorah-rbpkg.asc /usr/share/keyrings/
 
 RUN apt-get update -qq && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates ruby && \

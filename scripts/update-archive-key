@@ -35,5 +35,4 @@ end
 puts keyinfo
 validate(keyinfo, expected_fpr)
 
-key, st = Open3.capture2('gpg', '--dearmor', stdin_data: key)
-File.write(File.join(__dir__, '../sorah-rbpkg.gpg'), key)
+File.write(File.join(__dir__, '../sorah-rbpkg.asc'), key)
