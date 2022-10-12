@@ -1,5 +1,19 @@
 ARG DEBIAN_VERSION
 
+### Build unreleased version of aws_lambda_ric from source
+FROM debian:${DEBIAN_VERSION}-slim as gem
+
+RUN apt-get update -qq && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates ruby wget
+
+ARG REV=4dea33c0c3d1c148db7d9a5813e18b5643e395af
+
+WORKDIR /src/aws-lambda-ruby-runtime-interface-client
+RUN wget -q https://github.com/aws/aws-lambda-ruby-runtime-interface-client/archive/$REV.tar.gz -O /tmp/src.tar.gz
+RUN tar xf /tmp/src.tar.gz --strip=1
+RUN sed -i "/VERSION/s/$/+'.1.git-$REV'/" ./lib/aws_lambda_ric/version.rb
+RUN gem build aws_lambda_ric.gemspec
+
 ### Base for runtime and builder images
 FROM debian:${DEBIAN_VERSION}-slim as base
 
@@ -26,7 +40,8 @@ WORKDIR /var/task
 ### Runtime image
 FROM base as runtime
 
-RUN gem install -N aws_lambda_ric
+COPY --from=gem /src/aws-lambda-ruby-runtime-interface-client/*.gem /tmp
+RUN gem install -N /tmp/*.gem
 
 ENTRYPOINT ["/usr/local/bin/aws_lambda_ric"]
 
