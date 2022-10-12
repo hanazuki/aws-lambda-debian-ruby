@@ -36,9 +36,11 @@ jobs:
     - name: Meta data
       id: meta
       run: |
-        echo "::set-output name=timestamp::$(date --utc +%FT%TZ)"
-        echo "::set-output name=source::$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
-        echo "::set-output name=revision::$GITHUB_SHA"
+        (
+          echo "timestamp=$(date --utc +%FT%TZ)"
+          echo "source=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
+          echo "revision=$GITHUB_SHA"
+        ) >> $GITHUB_OUTPUT
     - name: Build runtime image
       uses: docker/build-push-action@v2
       with:
